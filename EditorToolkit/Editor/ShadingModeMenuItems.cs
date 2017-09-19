@@ -4,14 +4,37 @@ using UnityEditor;
 namespace UnityEditorToolkit {
 	public class ShadingModeMenuItems : Editor {
 
+		static readonly string ShadedModeUndoMessage = "Set to Shaded";
+		static readonly string WireframeModeUndoMessage = "Set to Wireframe";
+		static readonly string ShadedWireframeModeUndoMessage = "Set to Shaded Wireframe";
+
+		static string ShadingModeToMessage(DrawCameraMode mode) {
+			switch(mode) {
+			case DrawCameraMode.Textured:
+				return ShadedModeUndoMessage;
+			case DrawCameraMode.Wireframe:
+				return WireframeModeUndoMessage;
+			case DrawCameraMode.TexturedWire:
+				return ShadedWireframeModeUndoMessage;
+			default:
+				Debug.LogError(mode + " is an unsupported DrawCameraMode");
+				break;
+			}
+
+			return "";
+		}
+
 		static SceneView GetSceneView() {
 			return SceneView.lastActiveSceneView;
 		}
 
 		static void SetSceneRenderMode(DrawCameraMode mode) {
 			SceneView currentScene = GetSceneView();
-			currentScene.renderMode = mode;
-			currentScene.Repaint();
+			if(currentScene.renderMode != mode) {
+				Undo.RecordObject(currentScene, ShadingModeToMessage(mode));
+				currentScene.renderMode = mode;
+				currentScene.Repaint();
+			}
 		}
 
 		[MenuItem(Constants.ShadedModeItem, false, Constants.ShadedModePriority)]
