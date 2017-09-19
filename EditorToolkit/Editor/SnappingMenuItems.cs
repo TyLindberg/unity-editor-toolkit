@@ -2,7 +2,7 @@
 using UnityEditor;
 
 namespace UnityEditorToolkit {
-	public class ObjectSnapping : Editor {
+	public class SnappingMenuItems : Editor {
 		static readonly string SnapToOriginString = "Snap to Origin";
 		static readonly string SnapToGroundString = "Snap to Ground";
 		static readonly string SnapYToZeroString = "Snap Y to Zero";
@@ -10,7 +10,7 @@ namespace UnityEditorToolkit {
 		const string SnapToZeroMenuItem = "Toolkit/Snapping/Snap to Zero";
 		const string SnapToGroundMenuItem = "Toolkit/Snapping/Snap to Ground";
 
-		[MenuItem(SnapToZeroMenuItem + " " + KeyBindings.SnapToZeroKey)]
+		[MenuItem(Constants.SnapToZeroItem)]
 		static void SnapToOrigin() {
 			// Get transform data
 			Transform snapTransform = Selection.activeTransform;
@@ -36,13 +36,13 @@ namespace UnityEditorToolkit {
 			}
 		}
 
-		[MenuItem(SnapToZeroMenuItem + " " + KeyBindings.SnapToZeroKey, true)]
+		[MenuItem(Constants.SnapToZeroItem, true)]
 		static bool SelectionNotAtOrigin() {
 			return (Selection.activeTransform != null)
 				&& (!(Selection.activeTransform.position == Vector3.zero));
 		}
 
-		[MenuItem(SnapToGroundMenuItem + " " + KeyBindings.SnapToGroundKey)]
+		[MenuItem(Constants.SnapToGroundItem)]
 		static void SnapToGround() {
 			// Get current selected gameobject in the scene
 			GameObject snapObject = Selection.activeGameObject;
@@ -95,7 +95,7 @@ namespace UnityEditorToolkit {
 			}
 		}
 
-		[MenuItem(SnapToGroundMenuItem + " " + KeyBindings.SnapToGroundKey, true)]
+		[MenuItem(Constants.SnapToGroundItem, true)]
 		static bool CheckSnapToGround() {
 			return Selection.activeTransform != null;
 		}
