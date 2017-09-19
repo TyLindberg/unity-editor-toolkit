@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace UnityEditorToolkit {
 	public class SnappingMenuItems : Editor {
 		static readonly string SnapToOriginMessage = "Snap to Origin";
 		static readonly string SnapToGroundMessage = "Snap to Ground";
 		static readonly string SnapYToZeroMessage = "Snap Y to Zero";
+
+		// The maximum distance between "lowest" vertices
+		const float EPSILON = 0.0001f;
+
+		// TODO: Refactor into helper funtions class
+		static bool Approximately(float a, float b, float epsilon) {
+			return (a >= (b - epsilon)) && (a <= (b + epsilon));
+		}
 
 		[MenuItem(Constants.SnapToZeroItem, false, Constants.SnapToZeroPriority)]
 		static void SnapToOrigin() {
@@ -66,24 +75,41 @@ namespace UnityEditorToolkit {
 
 			// Storage of mesh data
 			Vector3[] vertices = mesh.vertices;
-			Vector3 lowestVertex = snapTransform.TransformPoint(vertices[0]);
+			List<Vector3> lowestVertices = new List<Vector3>();
+			lowestVertices.Add(snapTransform.TransformPoint(vertices[0]));
 			int vertexCount = mesh.vertexCount;
 
-			// Find lowest vertex in world space
-			// TODO: Use array of all lowest vertices
+			// Find lowest vertices in world space
 			for(int i = 1; i < vertexCount; i++) {
 				Vector3 v = snapTransform.TransformPoint(vertices[i]);
-				if(v.y < lowestVertex.y) {
-					lowestVertex = v;
+				if(Approximately(v.y, lowestVertices[0].y, EPSILON)) {
+					lowestVertices.Add(v);
+				}
+				else if(v.y < lowestVertices[0].y) {
+					lowestVertices.Clear();
+					lowestVertices.Add(v);
 				}
 			}
 
-			// Cast a ray downwards then snap object to closest surface
+			// Cast ray(s) downwards then snap object to closest surface
 			RaycastHit hit;
-			if(Physics.Raycast(lowestVertex, Vector3.down, out hit)) {
-				float snapDistance = hit.point.y - lowestVertex.y;
+			float minSnapDistance = Mathf.Infinity;
+
+			// Ignore the current object when raycasting
+			int currentLayer = snapObject.layer;
+			snapObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+			for(int i = 0; i < lowestVertices.Count; i++) {
+				if(Physics.Raycast(lowestVertices[i], Vector3.down, out hit)) {
+					minSnapDistance = Mathf.Min(hit.distance, minSnapDistance);
+				}
+			}
+
+			snapObject.layer = currentLayer;
+
+			if(minSnapDistance != Mathf.Infinity) {
 				Undo.RecordObject(snapTransform, SnapToGroundMessage);
-				snapTransform.Translate(0f, snapDistance, 0f, Space.World);
+				snapTransform.Translate(0f, -minSnapDistance, 0f, Space.World);
 			}
 			else {
 				Debug.Log("Cannot snap to ground because" +
