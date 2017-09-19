@@ -3,12 +3,9 @@ using UnityEditor;
 
 namespace UnityEditorToolkit {
 	public class SnappingMenuItems : Editor {
-		static readonly string SnapToOriginString = "Snap to Origin";
-		static readonly string SnapToGroundString = "Snap to Ground";
-		static readonly string SnapYToZeroString = "Snap Y to Zero";
-
-		const string SnapToZeroMenuItem = "Toolkit/Snapping/Snap to Zero";
-		const string SnapToGroundMenuItem = "Toolkit/Snapping/Snap to Ground";
+		static readonly string SnapToOriginMessage = "Snap to Origin";
+		static readonly string SnapToGroundMessage = "Snap to Ground";
+		static readonly string SnapYToZeroMessage = "Snap Y to Zero";
 
 		[MenuItem(Constants.SnapToZeroItem, false, Constants.SnapToZeroPriority)]
 		static void SnapToOrigin() {
@@ -22,12 +19,12 @@ namespace UnityEditorToolkit {
 
 			if(snapTransform.position.y == 0f) {
 				// Snap object transform to origin
-				Undo.RecordObject(snapTransform, SnapToOriginString);
+				Undo.RecordObject(snapTransform, SnapToOriginMessage);
 				snapTransform.localPosition = Vector3.zero;
 			}
 			else {
 				// Snap transform y to zero
-				Undo.RecordObject(snapTransform, SnapYToZeroString);
+				Undo.RecordObject(snapTransform, SnapYToZeroMessage);
 				snapTransform.localPosition = new Vector3(
 					snapTransform.localPosition.x,
 					0,
@@ -85,7 +82,7 @@ namespace UnityEditorToolkit {
 			RaycastHit hit;
 			if(Physics.Raycast(lowestVertex, Vector3.down, out hit)) {
 				float snapDistance = hit.point.y - lowestVertex.y;
-				Undo.RecordObject(snapTransform, SnapToGroundString);
+				Undo.RecordObject(snapTransform, SnapToGroundMessage);
 				snapTransform.Translate(0f, snapDistance, 0f, Space.World);
 			}
 			else {

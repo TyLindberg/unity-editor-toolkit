@@ -4,18 +4,18 @@ using UnityEditor;
 namespace UnityEditorToolkit {
 	public class ShadingModeMenuItems : Editor {
 
-		static readonly string ShadedModeUndoMessage = "Set to Shaded";
-		static readonly string WireframeModeUndoMessage = "Set to Wireframe";
-		static readonly string ShadedWireframeModeUndoMessage = "Set to Shaded Wireframe";
+		static readonly string ShadedModeMessage = "Set to Shaded";
+		static readonly string WireframeModeMessage = "Set to Wireframe";
+		static readonly string ShadedWireframeModeMessage = "Set to Shaded Wireframe";
 
 		static string ShadingModeToMessage(DrawCameraMode mode) {
 			switch(mode) {
 			case DrawCameraMode.Textured:
-				return ShadedModeUndoMessage;
+				return ShadedModeMessage;
 			case DrawCameraMode.Wireframe:
-				return WireframeModeUndoMessage;
+				return WireframeModeMessage;
 			case DrawCameraMode.TexturedWire:
-				return ShadedWireframeModeUndoMessage;
+				return ShadedWireframeModeMessage;
 			default:
 				Debug.LogError(mode + " is an unsupported DrawCameraMode");
 				break;
