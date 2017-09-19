@@ -5,7 +5,7 @@
 		//////////////////////////////
 
 		private const string BaseMenuPath = "Toolkit/";
-		private const string SnappingMenuPath = "Snapping/";
+		private const string SnappingMenuPath = "";
 		private const string ShadingModeMenuPath = "Shading Mode/";
 
 
@@ -40,5 +40,19 @@
 			"Wireframe " + WireframeModeKey;
 		public const string ShadedWireframeModeItem = BaseMenuPath + ShadingModeMenuPath +
 			"Shaded Wireframe " + ShadedWireframeModeKey;
+
+
+		//////////////////////////////
+		//   Menu Item Priorities   //
+		//////////////////////////////
+
+		// Snapping
+		public const int SnapToZeroPriority = 1;
+		public const int SnapToGroundPriority = SnapToZeroPriority + 1;
+
+		// Shading Mode
+		public const int ShadedModePriority = 50;
+		public const int WireframeModePriority = ShadedModePriority + 1;
+		public const int ShadedWireframeModePriority = WireframeModePriority + 1;
 	}
 }

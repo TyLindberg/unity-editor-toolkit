@@ -14,7 +14,7 @@ namespace UnityEditorToolkit {
 			currentScene.Repaint();
 		}
 
-		[MenuItem(Constants.ShadedModeItem)]
+		[MenuItem(Constants.ShadedModeItem, false, Constants.ShadedModePriority)]
 		static void SetShadedMode() {
 			SetSceneRenderMode(DrawCameraMode.Textured);
 		}
@@ -24,7 +24,7 @@ namespace UnityEditorToolkit {
 			return GetSceneView() != null;
 		}
 
-		[MenuItem(Constants.WireframeModeItem)]
+		[MenuItem(Constants.WireframeModeItem, false, Constants.WireframeModePriority)]
 		static void SetWireframeMode() {
 			SetSceneRenderMode(DrawCameraMode.Wireframe);
 		}
@@ -34,7 +34,7 @@ namespace UnityEditorToolkit {
 			return GetSceneView() != null;
 		}
 
-		[MenuItem(Constants.ShadedWireframeModeItem)]
+		[MenuItem(Constants.ShadedWireframeModeItem, false, Constants.ShadedWireframeModePriority)]
 		static void SetShadedWireframeMode() {
 			SetSceneRenderMode(DrawCameraMode.TexturedWire);
 		}

@@ -10,7 +10,7 @@ namespace UnityEditorToolkit {
 		const string SnapToZeroMenuItem = "Toolkit/Snapping/Snap to Zero";
 		const string SnapToGroundMenuItem = "Toolkit/Snapping/Snap to Ground";
 
-		[MenuItem(Constants.SnapToZeroItem)]
+		[MenuItem(Constants.SnapToZeroItem, false, Constants.SnapToZeroPriority)]
 		static void SnapToOrigin() {
 			// Get transform data
 			Transform snapTransform = Selection.activeTransform;
@@ -42,7 +42,7 @@ namespace UnityEditorToolkit {
 				&& (!(Selection.activeTransform.position == Vector3.zero));
 		}
 
-		[MenuItem(Constants.SnapToGroundItem)]
+		[MenuItem(Constants.SnapToGroundItem, false, Constants.SnapToGroundPriority)]
 		static void SnapToGround() {
 			// Get current selected gameobject in the scene
 			GameObject snapObject = Selection.activeGameObject;
