@@ -60,35 +60,38 @@ namespace UnityEditorToolkit {
 			Transform snapTransform = snapObject.transform;
 
 			// Get object mesh if it exists
+			bool hasMesh = false;
+			Mesh mesh = null;
 			MeshFilter filter = snapObject.GetComponent<MeshFilter>();
-			if(filter == null) {
-				Debug.Log("Cannot snap to ground because" +
-					" the selected object has no mesh filter attached.");
-				return;
-			}
-			Mesh mesh = filter.sharedMesh;
-			if(mesh == null) {
-				Debug.Log("Cannot snap to ground because" +
-					" the selected object has no mesh attached.");
-				return;
+			if(filter != null) {
+				mesh = filter.sharedMesh;
+				if(mesh != null && mesh.vertexCount > 0) {
+					hasMesh = true;
+				}
 			}
 
-			// Storage of mesh data
-			Vector3[] vertices = mesh.vertices;
 			List<Vector3> lowestVertices = new List<Vector3>();
-			lowestVertices.Add(snapTransform.TransformPoint(vertices[0]));
-			int vertexCount = mesh.vertexCount;
 
-			// Find lowest vertices in world space
-			for(int i = 1; i < vertexCount; i++) {
-				Vector3 v = snapTransform.TransformPoint(vertices[i]);
-				if(Approximately(v.y, lowestVertices[0].y, EPSILON)) {
-					lowestVertices.Add(v);
+			if(hasMesh) {
+				// Storage of mesh data
+				Vector3[] vertices = mesh.vertices;
+				lowestVertices.Add(snapTransform.TransformPoint(vertices[0]));
+				int vertexCount = mesh.vertexCount;
+
+				// Find lowest vertices in world space
+				for(int i = 1; i < vertexCount; i++) {
+					Vector3 v = snapTransform.TransformPoint(vertices[i]);
+					if(Approximately(v.y, lowestVertices[0].y, EPSILON)) {
+						lowestVertices.Add(v);
+					}
+					else if(v.y < lowestVertices[0].y) {
+						lowestVertices.Clear();
+						lowestVertices.Add(v);
+					}
 				}
-				else if(v.y < lowestVertices[0].y) {
-					lowestVertices.Clear();
-					lowestVertices.Add(v);
-				}
+			}
+			else {
+				lowestVertices.Add(snapTransform.position);
 			}
 
 			// Cast ray(s) downwards then snap object to closest surface
