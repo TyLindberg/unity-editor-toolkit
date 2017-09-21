@@ -54,7 +54,7 @@ namespace UnityEditorToolkit {
 		// Scene Rotation
 
 		static bool CanRotateScene(SceneView view) {
-			return view != null && !view.isRotationLocked;
+			return view != null && !view.isRotationLocked && !view.in2DMode;
 		}
 
 		static void RotateSceneView(SceneView view, Quaternion rot) {
@@ -138,7 +138,7 @@ namespace UnityEditorToolkit {
 
 		[MenuItem(Constants.OrthographicToggleItem, true)]
 		static bool CheckToggleOrthographicView() {
-			return GetSceneView() != null;
+			return GetSceneView() != null && !GetSceneView().in2DMode;
 		}
 	}
 }
