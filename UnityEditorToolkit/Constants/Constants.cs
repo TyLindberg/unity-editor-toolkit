@@ -6,9 +6,9 @@
 
 		private const string BaseMenuPath = "Toolkit/";
 		private const string SnappingMenuPath = "";
-		private const string ShadingModeMenuPath = "Shading Mode/";
-		private const string SceneRotationMenuPath = "Scene Rotation/";
 		private const string OrthographicTogglePath = "";
+		private const string SceneRotationMenuPath = "Scene Rotation/";
+		private const string ShadingModeMenuPath = "Shading Mode/";
 
 
 		//////////////////////////////
@@ -24,10 +24,8 @@
 		private const string SnapToZeroKey = "_.";
 		private const string SnapToGroundKey = "_g";
 
-		// Shading Mode
-		private const string ShadedModeKey = "_7";
-		private const string WireframeModeKey = "_8";
-		private const string ShadedWireframeModeKey = "_9";
+		// Orthographic Toggle
+		private const string OrthographicToggleKey = "_3";
 
 		// Scene Rotation
 		private const string RightViewKey = "_4";
@@ -37,8 +35,10 @@
 		private const string FrontViewKey = "_6";
 		private const string BackViewKey = "#6";
 
-		// Orthographic Toggle
-		private const string OrthographicToggleKey = "_3";
+		// Shading Mode
+		private const string ShadedModeKey = "_7";
+		private const string WireframeModeKey = "_8";
+		private const string ShadedWireframeModeKey = "_9";
 
 
 		//////////////////////////////
@@ -51,13 +51,9 @@
 		public const string SnapToGroundItem = BaseMenuPath + SnappingMenuPath +
 			"Snap to Ground " + SnapToGroundKey;
 
-		// Shading Mode
-		public const string ShadedModeItem = BaseMenuPath + ShadingModeMenuPath +
-			"Shaded " + ShadedModeKey;
-		public const string WireframeModeItem = BaseMenuPath + ShadingModeMenuPath +
-			"Wireframe " + WireframeModeKey;
-		public const string ShadedWireframeModeItem = BaseMenuPath + ShadingModeMenuPath +
-			"Shaded Wireframe " + ShadedWireframeModeKey;
+		// Orthographic Toggle
+		public const string OrthographicToggleItem = BaseMenuPath + OrthographicTogglePath +
+			"Orthographic Toggle " + OrthographicToggleKey;
 
 		// Scene Rotation
 		public const string RightViewItem = BaseMenuPath + SceneRotationMenuPath +
@@ -73,9 +69,13 @@
 		public const string BackViewItem = BaseMenuPath + SceneRotationMenuPath +
 			"Back View " + BackViewKey;
 
-		// Orthographic Toggle
-		public const string OrthographicToggleItem = BaseMenuPath + OrthographicTogglePath +
-			"Orthographic " + OrthographicToggleKey;
+		// Shading Mode
+		public const string ShadedModeItem = BaseMenuPath + ShadingModeMenuPath +
+			"Shaded " + ShadedModeKey;
+		public const string WireframeModeItem = BaseMenuPath + ShadingModeMenuPath +
+			"Wireframe " + WireframeModeKey;
+		public const string ShadedWireframeModeItem = BaseMenuPath + ShadingModeMenuPath +
+			"Shaded Wireframe " + ShadedWireframeModeKey;
 
 
 		//////////////////////////////
@@ -86,20 +86,20 @@
 		public const int SnapToZeroPriority = 1;
 		public const int SnapToGroundPriority = SnapToZeroPriority + 1;
 
-		// Shading Mode
-		public const int ShadedModePriority = 50;
-		public const int WireframeModePriority = ShadedModePriority + 1;
-		public const int ShadedWireframeModePriority = WireframeModePriority + 1;
+		// Orthographic Toogle
+		public const int OrthographicTogglePriority = 50;
 
 		// Scene Rotation
-		public const int RightViewPriority = 55;
+		public const int RightViewPriority = 51;
 		public const int LeftViewPriority = RightViewPriority + 1;
 		public const int TopViewPriority = LeftViewPriority + 1;
 		public const int BottomViewPriority = TopViewPriority + 1;
 		public const int FrontViewPriority = BottomViewPriority + 1;
 		public const int BackViewPriority = FrontViewPriority + 1;
 
-		// Orthographic Toogle
-		public const int OrthographicTogglePriority = 62;
+		// Shading Mode
+		public const int ShadedModePriority = 60;
+		public const int WireframeModePriority = ShadedModePriority + 1;
+		public const int ShadedWireframeModePriority = WireframeModePriority + 1;
 	}
 }

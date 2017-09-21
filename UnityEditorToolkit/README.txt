@@ -50,8 +50,3 @@ Key Bindings
 ============
 
 All current key bindings are experimental. If you want to change any of them, you can do so by manually editing the "Key Bindings" section of `Constants.cs`.
-
-Importing to Unity
-==================
-
-To import the Unity Editor Toolkit into your Unity project, all you need to do is copy the `UnityEditorToolkit` directory of this repo into the `Assets` directory of your project. You now have access to all Unity Editor Toolkit commands when opening your Unity project.
