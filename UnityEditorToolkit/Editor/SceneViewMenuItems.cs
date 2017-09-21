@@ -8,6 +8,9 @@ namespace UnityEditorToolkit {
 		static readonly string WireframeModeMessage = "Set to Wireframe";
 		static readonly string ShadedWireframeModeMessage = "Set to Shaded Wireframe";
 
+		// TODO: Expose this value somewhere to the user
+		static bool UseInstantCameraMovement = false;
+
 		static string ShadingModeToMessage(DrawCameraMode mode) {
 			switch(mode) {
 			case DrawCameraMode.Textured:
@@ -69,7 +72,7 @@ namespace UnityEditorToolkit {
 			return GetSceneView() != null;
 		}
 
-		// Scene Controls
+		// Scene Rotation
 
 		static bool CanRotateScene(SceneView view) {
 			return view != null && !view.isRotationLocked;
@@ -77,7 +80,8 @@ namespace UnityEditorToolkit {
 
 		static void RotateSceneView(SceneView view, Quaternion rot) {
 			if(CanRotateScene(view)) {
-				view.LookAt(view.pivot, rot);
+				view.LookAt(view.pivot, rot, view.size,
+					view.orthographic, UseInstantCameraMovement);
 			}
 		}
 
@@ -139,6 +143,23 @@ namespace UnityEditorToolkit {
 		[MenuItem(Constants.BackViewItem, true)]
 		static bool CheckBackViewItem() {
 			return CanRotateScene(GetSceneView());
+		}
+
+		// Orthographic Toggle
+
+		[MenuItem(Constants.OrthographicToggleItem, false, Constants.OrthographicTogglePriority)]
+		static void ToggleOrthographicView() {
+			SceneView currentScene = GetSceneView();
+			if(currentScene != null) {
+				currentScene.LookAt(currentScene.pivot, currentScene.rotation,
+					currentScene.size, !currentScene.orthographic,
+					UseInstantCameraMovement);
+			}
+		}
+
+		[MenuItem(Constants.OrthographicToggleItem, true)]
+		static bool CheckToggleOrthographicView() {
+			return GetSceneView() != null;
 		}
 	}
 }

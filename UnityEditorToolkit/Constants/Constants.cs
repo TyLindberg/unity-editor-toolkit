@@ -8,6 +8,7 @@
 		private const string SnappingMenuPath = "";
 		private const string ShadingModeMenuPath = "Shading Mode/";
 		private const string SceneRotationMenuPath = "Scene Rotation/";
+		private const string OrthographicTogglePath = "";
 
 
 		//////////////////////////////
@@ -29,12 +30,15 @@
 		private const string ShadedWireframeModeKey = "_9";
 
 		// Scene Rotation
-		private const string RightViewKey = "_3";
-		private const string LeftViewKey = "#3";
-		private const string TopViewKey = "_4";
-		private const string BottomViewKey = "#4";
-		private const string FrontViewKey = "_5";
-		private const string BackViewKey = "#5";
+		private const string RightViewKey = "_4";
+		private const string LeftViewKey = "#4";
+		private const string TopViewKey = "_5";
+		private const string BottomViewKey = "#5";
+		private const string FrontViewKey = "_6";
+		private const string BackViewKey = "#6";
+
+		// Orthographic Toggle
+		private const string OrthographicToggleKey = "_3";
 
 
 		//////////////////////////////
@@ -69,6 +73,10 @@
 		public const string BackViewItem = BaseMenuPath + SceneRotationMenuPath +
 			"Back View " + BackViewKey;
 
+		// Orthographic Toggle
+		public const string OrthographicToggleItem = BaseMenuPath + OrthographicTogglePath +
+			"Orthographic " + OrthographicToggleKey;
+
 
 		//////////////////////////////
 		//   Menu Item Priorities   //
@@ -90,5 +98,8 @@
 		public const int BottomViewPriority = TopViewPriority + 1;
 		public const int FrontViewPriority = BottomViewPriority + 1;
 		public const int BackViewPriority = FrontViewPriority + 1;
+
+		// Orthographic Toogle
+		public const int OrthographicTogglePriority = 62;
 	}
 }
