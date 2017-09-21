@@ -4,28 +4,8 @@ using UnityEditor;
 namespace UnityEditorToolkit {
 	public class SceneViewMenuItems : Editor {
 
-		static readonly string ShadedModeMessage = "Set to Shaded";
-		static readonly string WireframeModeMessage = "Set to Wireframe";
-		static readonly string ShadedWireframeModeMessage = "Set to Shaded Wireframe";
-
 		// TODO: Expose this value somewhere to the user
 		static bool UseInstantCameraMovement = false;
-
-		static string ShadingModeToMessage(DrawCameraMode mode) {
-			switch(mode) {
-			case DrawCameraMode.Textured:
-				return ShadedModeMessage;
-			case DrawCameraMode.Wireframe:
-				return WireframeModeMessage;
-			case DrawCameraMode.TexturedWire:
-				return ShadedWireframeModeMessage;
-			default:
-				Debug.LogError(mode + " is an unsupported DrawCameraMode");
-				break;
-			}
-
-			return "";
-		}
 
 		static SceneView GetSceneView() {
 			return SceneView.lastActiveSceneView;
@@ -36,7 +16,6 @@ namespace UnityEditorToolkit {
 		static void SetSceneRenderMode(DrawCameraMode mode) {
 			SceneView currentScene = GetSceneView();
 			if(currentScene.renderMode != mode) {
-				Undo.RecordObject(currentScene, ShadingModeToMessage(mode));
 				currentScene.renderMode = mode;
 				currentScene.Repaint();
 			}
