@@ -4,6 +4,7 @@
 		Pass {
 			CGPROGRAM
 
+			#pragma target 3.5
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "UnityCG.cginc"
@@ -19,9 +20,14 @@
 			}
 
 			float4 frag(v2f i) : SV_Target {
-				return i.pos.zzzz;
+				float depth = i.pos.z;
+				#if (SHADER_API_D3D11 || SHADER_API_METAL)
+				depth = 1 - depth;
+				#endif
+				return float4(depth, depth, depth, 1);
 			}
 			ENDCG
 		}
 	}
+	Fallback Off
 }

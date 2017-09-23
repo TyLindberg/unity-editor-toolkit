@@ -137,6 +137,12 @@ namespace UnityEditorToolkit {
 				snapObject.layer = currentLayer;
 			}
 			else {
+				if(SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Direct3D9) {
+					Debug.Log("Cannot use RenderTexture Snap To Ground with DX9. Try using " +
+						"physics Snap to Ground instead.");
+					return;
+				}
+
 				// Create a 1x1 pixel render texture to render out a orthographic camera
 				// pointing directly below the object. This will function as an inefficient
 				// and less precise raycast that allows snapping to ground to work on
