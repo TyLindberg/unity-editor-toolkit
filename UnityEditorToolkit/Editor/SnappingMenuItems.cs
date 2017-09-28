@@ -4,6 +4,14 @@ using System.Collections.Generic;
 
 namespace UnityEditorToolkit {
 	public class SnappingMenuItems : Editor {
+		// Whether or not to use raycasting to calculate snapping to ground
+		public static bool usePhysicsSnapToGround = false;
+		// Only relevant for render texture snap to ground
+		public static float maxSnapToGroundDistance = 100;
+		// Use to make values in editor prettier (no scientific notation)
+		public static bool isSnapTruncated = true;
+		public static uint truncateDecimalPlaces = 6;
+
 		static readonly string SnapToOriginMessage = "Snap to Origin";
 		static readonly string SnapToGroundMessage = "Snap to Ground";
 		static readonly string SnapYToZeroMessage = "Snap Y to Zero";
@@ -14,6 +22,23 @@ namespace UnityEditorToolkit {
 		// TODO: Refactor into helper funtions class
 		static bool Approximately(float a, float b, float epsilon) {
 			return (a >= (b - epsilon)) && (a <= (b + epsilon));
+		}
+
+		static float Truncate(float val, uint numDecimalPlaces) {
+			return Mathf.Round(val * (10f * numDecimalPlaces)) / (10f * numDecimalPlaces);
+		}
+
+		static void ConfigureSnapToGroundCamera(Camera cam, RenderTexture renderTex) {
+			cam.enabled = false; // Needs to be disabled to manually render
+			cam.orthographic = true;
+			cam.aspect = 1;
+			cam.orthographicSize = 0.01f;
+			cam.farClipPlane = maxSnapToGroundDistance;
+			cam.nearClipPlane = 0.00001f;
+			cam.targetTexture = renderTex;
+			cam.clearFlags = CameraClearFlags.SolidColor;
+			cam.backgroundColor = new Color(1, 0, 0);
+			cam.transform.rotation = Quaternion.Euler(90, 0, 0);
 		}
 
 		[MenuItem(Constants.SnapToZeroItem, false, Constants.SnapToZeroPriority)]
@@ -94,30 +119,98 @@ namespace UnityEditorToolkit {
 				lowestVertices.Add(snapTransform.position);
 			}
 
-			// Cast ray(s) downwards then snap object to closest surface
-			RaycastHit hit;
 			float minSnapDistance = Mathf.Infinity;
+			if(usePhysicsSnapToGround) {
+				// Cast ray(s) downwards then snap object to closest surface
+				RaycastHit hit;
 
-			// Ignore the current object when raycasting
-			int currentLayer = snapObject.layer;
-			snapObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+				// Ignore the current object when raycasting
+				int currentLayer = snapObject.layer;
+				snapObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
-			for(int i = 0; i < lowestVertices.Count; i++) {
-				if(Physics.Raycast(lowestVertices[i], Vector3.down, out hit)) {
-					minSnapDistance = Mathf.Min(hit.distance, minSnapDistance);
+				for(int i = 0; i < lowestVertices.Count; i++) {
+					if(Physics.Raycast(lowestVertices[i], Vector3.down, out hit)) {
+						minSnapDistance = Mathf.Min(hit.distance, minSnapDistance);
+					}
 				}
-			}
 
-			snapObject.layer = currentLayer;
+				snapObject.layer = currentLayer;
+			}
+			else {
+				if(SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Direct3D9) {
+					Debug.Log("Cannot use RenderTexture Snap To Ground with DX9. Try using " +
+						"physics Snap to Ground instead.");
+					return;
+				}
+
+				// Create a 1x1 pixel render texture to render out a orthographic camera
+				// pointing directly below the object. This will function as an inefficient
+				// and less precise raycast that allows snapping to ground to work on
+				// meshes without colliders
+				RenderTexture depthTexture = RenderTexture.GetTemporary(1, 1, 32);
+				Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBAFloat, false);
+				Shader depthShader = Shader.Find("Unity Editor Toolkit/Depth to Color");
+				GameObject camObject = new GameObject();
+				Camera depthCamera = camObject.AddComponent<Camera>();
+
+				depthTexture.format = RenderTextureFormat.ARGBFloat;
+				ConfigureSnapToGroundCamera(depthCamera, depthTexture);
+
+				// Need to set this to active in order to use ReadPixels later
+				RenderTexture.active = depthTexture;
+
+				for(int i = 0; i < lowestVertices.Count; i++) {
+					depthCamera.transform.position = lowestVertices[i];
+					depthCamera.RenderWithShader(depthShader, "");
+					tex.ReadPixels(new Rect(0, 0, 1, 1), 0, 0);
+					Color[] colors = tex.GetPixels();
+
+					if(colors.Length != 1) {
+						Debug.LogError("GetPixels returned an array of colors of length: " +
+							colors.Length + ". Expected an array of length 1.");
+						return;
+					}
+
+					float snapDistance = depthCamera.nearClipPlane +
+						colors[0].r * (depthCamera.farClipPlane - depthCamera.nearClipPlane);
+
+					// Nothing was hit
+					if(colors[0] == depthCamera.backgroundColor) {
+						snapDistance = Mathf.Infinity;
+					}
+
+					minSnapDistance = Mathf.Min(minSnapDistance, snapDistance);
+				}
+
+				depthCamera.targetTexture = null;
+				RenderTexture.active = null;
+				RenderTexture.ReleaseTemporary(depthTexture);
+				DestroyImmediate(camObject);
+			}
 
 			if(minSnapDistance != Mathf.Infinity) {
 				Undo.RecordObject(snapTransform, SnapToGroundMessage);
 				snapTransform.Translate(0f, -minSnapDistance, 0f, Space.World);
+				if(isSnapTruncated) {
+					float truncatedY = Truncate(snapTransform.position.y, truncateDecimalPlaces);
+					snapTransform.position = new Vector3(
+						snapTransform.position.x,
+						truncatedY,
+						snapTransform.position.z
+					);
+				}
 			}
 			else {
-				Debug.Log("Cannot snap to ground because" +
-					" there is no gameobject with an active collider below" +
-					" the selected gameobject's lowest vertex.");
+				if(usePhysicsSnapToGround) {
+					Debug.Log("Cannot snap to ground because" +
+						" there is no gameobject with an active collider below" +
+						" the selected gameobject's lowest vertices.");
+				}
+				else {
+					Debug.Log("Cannot snap to ground because no rendered mesh" +
+						" components were found beneath the selected gameobject's" +
+						" lowest vertices.");
+				}
 			}
 		}
 
