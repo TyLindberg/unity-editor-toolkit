@@ -13,7 +13,7 @@ The Unity Editor Toolkit exposes helpful commands and keyboard shortcuts to make
 ### Snap to Ground (Hotkey: `G`)
 `Snap to Ground` allows you to snap an object to rest on the ground below it. If the object has no mesh then it will snap the object root directly to the ground. If the object does have a mesh, then it will snap the lowest vertex to the ground.
 
-*NOTE: Currently this requires the ground to have a collider on it.*
+*NOTE: This allows snapping to any mesh below the object, both meshes with and without a collider component.*
 
 ### Snap to Zero (Hotkey: `.`)
 `Snap to Zero` is a useful command for snapping an object to the origin after creating it. It has two bits of functionality that are useful. If the object's y-component of local position is not zero, then the first invocation of `Snap to Zero` will snap the object to the xz-plane in local space. If the y component of the object's local position is already 0, then `Snap to Zero` will snap the object to the origin of local space. If the object has no parent it will snap in world space instead.
