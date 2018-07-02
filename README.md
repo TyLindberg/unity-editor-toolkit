@@ -1,7 +1,7 @@
 Unity Editor Toolkit
 ====================
 
-A set of helpful Unity editor tools to improve workflow and efficiency
+A set of helpful Unity editor tools to improve workflow and efficiency. __NOTE: This is only tested in the Mac version of Unity. There are known issues where this code will override keys in the Windows version.__
 
 Usage
 =====
